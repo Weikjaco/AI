@@ -51,6 +51,15 @@ class Graph:
                 queue = queue[1:]
             random.shuffle(queue)
 
+    def edge_dict_setup(self):
+        self.edge_dict = {}
+        for key in self.nodes:
+            self.edge_dict.update({key.name:[]})
+
+        for edge in self.edges:
+            self.edge_dict[edge[0]].append(edge)
+            self.edge_dict[edge[1]].append(edge)
+
     #TODO need more explanation:
     def edge_crossed(self, n1, n2):
         for i in self.edges:
@@ -164,7 +173,7 @@ class Graph:
         self.draw_edges("black", 10)
         #self.draw_nodes(10,show_number=True)
 
-        #self.draw_nodes(10)
+        self.draw_nodes(10)
 
         wn.exitonclick()
 

@@ -51,5 +51,7 @@ def main():
     graph_list = graphs_from_file()
     #for i in graph_list:
     #    i.draw()
+    p = PopulationManager(1, graph_list[5], ['blue','red','green','yellow'])
+    p.simple_backtracking()
 
 main()
