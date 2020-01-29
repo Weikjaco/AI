@@ -190,4 +190,4 @@ def main():
     #print(g.nodes)
     print(g.edges)
     g.draw()
-main()
+#main()
