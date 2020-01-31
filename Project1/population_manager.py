@@ -12,7 +12,88 @@ class PopulationManager:
 
         stack = [self.graph.nodes[0].name]
         print(stack)
+    
+    def annealing_min_conflict(self):
+        temp = 20000
+        cooling_rate = .003
+        best_state = self.graph  # We need to track our best state
+        current_state = self.graph
+        while temp > 1:
+            # Get fitness of current state
+            curr_energy = self.get_violations(current_state)
+            #print("Current Energy {}".format(curr_energy))
+            # for i in range(len(best_state.nodes)):
+            #     print(best_state.nodes[i].name, end=",")
+            new_state = self.swap_color(current_state)
+            new_energy = self.get_violations(new_state)
+            #print("New energy {}".format(new_energy))
+            # If energy is better we accept the move
+            if new_energy < curr_energy:
+                current_state = new_state
+            elif (math.e**(curr_energy-new_energy))/temp > rd.randrange(0,1):
+                current_state = new_state
+            # keep track of best solution
+            print(self.get_violations(best_state))
+            if self.get_violations(new_state) < self.get_violations(best_state):
+                print("HERE")
+                best_state = new_state
+            # cool system
+            temp *= 1-cooling_rate
+        for i in range(len(best_state.nodes)-1):
+            print(best_state.nodes[i].color, end=",")
+        print()
+        for i in range(len(self.graph.nodes)-1):
+            print(self.graph.nodes[i].color, end=",")
+        # print(best_state.edges.color)
+        # print(self.graph.edges)
 
+    def get_violations(self, state):
+        """Returns the number of violations within the current state"""
+        num_violations = 0
+        for edge in state.edges:
+            for idx in range(1):
+                # See if each edge consists of 2 nodes with same color
+                if state.nodes[edge[idx]].color == state.nodes[edge[idx+1]].color:
+                    num_violations += 1
+        return num_violations
+
+    def swap_color(self, state):
+        """Swaps nodes within our current node list"""
+        # Get nodes were swapping
+        pos = rd.randint(0, len(state.nodes)-1)
+        #print(pos)
+
+        # Get colors that are not the same as current color
+        new_col = []
+        for color in self.col_list:
+            if color != state.nodes[pos].color:
+                new_col.append(color)
+
+        # randomly select a color
+        new_col_idx = rd.randrange(0, len(new_col)-1)
+        # Change color of randomly selected node
+        state.nodes[pos].color = new_col[new_col_idx]
+        # pos_two = rd.randint(0, len(state.nodes)-1)
+
+        # Stop them from being the same
+        # while pos_two == pos_one:
+        #     pos_two = rd.randint(0, len(state.nodes)-1)
+        # print(pos_two)
+        # Perform swap
+        # print("Before Swap:")
+        # for i in range(len(state.nodes)-1):
+        #     print(state.nodes[i].name, end=",")
+        # temp = state.nodes[pos_one]
+        # state.nodes[pos_one] = state.nodes[pos_two]
+        # state.nodes[pos_two] = temp
+        # print("\nAfter Swap")
+        # for i in range(len(state.nodes)-1):
+        #     print(state.nodes[i].name, end=",")
+
+        new_state = state
+        # print(new_state)
+        return new_state
+    
     def simple_backtracking(self):
         stack = [self.graph.nodes[0].name]
         curr = self.graph.get_node(stack[-1])
